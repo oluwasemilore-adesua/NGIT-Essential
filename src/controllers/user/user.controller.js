@@ -2,15 +2,14 @@ const bcrypt = require("bcryptjs");
 const User = require("../../models/users/user.model");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv").config();
-
 const JWT_TOKEN = process.env.JWT_SECRET || "yourwwwww";
-
 const saltRounds = 10;
+const hashedDataFunction = require("../../utils/data");
 
 //Register User
 const registerUser = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, email, password, imageUrl, authToken } = req.body;
 
         
         // check if user exists
@@ -22,13 +21,16 @@ const registerUser = async (req, res) => {
         }
 
         // hash password
-        const hashedPassword = await bcrypt.hash(password, saltRounds);
+        const { hashedPassword, hashedAuthToken, hashedImageUrl } = 
+        await hashedDataFunction(password, authToken, imageUrl);
 
         // create user
         const user = await User.create({
             name,
             email,
-            password: hashedPassword
+            password: hashedPassword,
+            imageUrl: hashedImageUrl,
+            authToken: hashedAuthToken
         });
 
         //create token 
