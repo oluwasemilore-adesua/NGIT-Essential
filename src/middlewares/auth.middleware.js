@@ -9,6 +9,7 @@ const auth = async (req, res, next) => {
 
   token =
     req.headers.token ||
+    req.headers["X-API-KEY"] ||
     req.headers["authorization"]?.split(" ")[1] ||
     req.cookies?.token;
 
