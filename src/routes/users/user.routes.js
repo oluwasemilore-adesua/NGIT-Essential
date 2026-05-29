@@ -7,6 +7,8 @@ const{
 } =require ("../../controllers/user/user.controller");
 const auth = require("../../middlewares/auth.middleware");
 
+const {body} = require("express-validator");
+
 const userRouter = express.Router();
 
 userRouter.post("/register", registerUser);                             
