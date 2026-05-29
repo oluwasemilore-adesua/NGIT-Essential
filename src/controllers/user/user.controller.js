@@ -6,6 +6,8 @@ const JWT_TOKEN = process.env.JWT_SECRET || "yourwwwww";
 const saltRounds = 10;
 const hashedDataFunction = require("../../utils/data");
 
+const {body, validationResult  } = "express-validator";
+
 //Register User
 const registerUser = async (req, res) => {
     try {
@@ -71,7 +73,13 @@ const loginUser = async (req, res) => {
                 message: "Invalid Credentials"
             });
         }
+        body("email").isEmail().normalizeEmail().withMessage("Invalid email format");
+        body("name").notEmpty().trim().withMessage("Name is required");
+        body("password")
+            .isLength({ min: 6 })
+            .withMessage("Password must be at least 6 characters long");
 
+            
         //  create token 
         const token = jwt.sign(
             { userId: user._id },
@@ -86,7 +94,6 @@ const loginUser = async (req, res) => {
 
     } catch (error) {
         res.status(500).json({  
-
             message: "Error logging in user",
             error: error.message
         });
