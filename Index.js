@@ -6,6 +6,7 @@ const orderRouter = require("./src/routes/orders/order.routes");
 const dotenv = require('dotenv');
 const connectDB = require(`./src/db/index`);
 const errorHandler = require(`./src/middlewares/error.middleware`);
+const {fetchFromApi, fetchFromApiWithAxios} = require("./src/utils/api");
 
 dotenv.config();
 
@@ -25,6 +26,25 @@ app.use("/api/cart", cartRouter);
 
 app.use("/api/orders", orderRouter);
 
+app.get("/test-external-api", async (req, res, next) => {
+    try {
+        const data = await fetchFromApi();
+        res.json(data);
+    } catch (error) {
+        console.error("Error fetching from external API:", error);
+        next(error); 
+    }
+});
+
+app.get("/test-external-api-axios", async (req, res, next) => {
+  try {
+    const data = await fetchFromApiWithAxios();
+    res.json(data);
+  } catch (error) {
+    console.error("Error fetching from external API:", error);
+    next(error);
+  }
+});
 app.use (errorHandler);
 
  
